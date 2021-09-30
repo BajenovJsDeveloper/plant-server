@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In</title>
+</head>
+<body>
+  <div class="main" id="main">
+    <div class="container">
+      <h1> Login Page</h1>
+      <div class="login__container">
+        <form action="" name="login">
+          <div class="input">
+            <label for="email">Email</label>
+            <input class="input__field" type="text" placeholder="myEmail@gmail.com" name="email" id="email">
+          </div>
+          <div class="input">
+            <label for="pass">Password</label>
+            <input class="input__field" type="password" placeholder="password" name="pass" id="pass">
+          </div>
+          <button class="btn" id="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <style>
+    body{
+      margin: 0;
+      padding: 0;
+      font-size: 16px;
+    }
+    .main{
+      position: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+    .login__container{
+      padding: 1.5rem;
+      border: 1px solid rgba(187, 224, 255, 0.966);
+      box-shadow: 0 0 15px rgba(148, 148, 148, 0.233);
+    }
+    .input__field{
+      margin: 1rem 0;
+      padding: 0.5rem;
+      display: block;
+    }
+    .btn{
+      padding: 1rem 2rem;
+      background-color: rgba(21, 96, 158, 0.966);
+      color: white;
+      border-radius: 5px;
+    }
+  </style>
+
+  <script>
+    document.querySelector("#submit").onclick = async (event) => {
+      event.preventDefault()
+      const email = document.forms.login.elements.email.value
+      const password = document.forms.login.elements.pass.value
+      alert('Click')
+      const response = await fetch("http://localhost:3300/login", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await response.json()
+      if (data.token) {
+        const response = await fetch("http://localhost:3300/user", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${data.token}`
+          }
+        })
+        const doc = await response.text()
+        document.write(doc)
+        window.history.pushState({ page: 1 }, null, "/user")
+      }
+    }
+  </script>
+</body>
+</html>
